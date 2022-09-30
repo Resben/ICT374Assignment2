@@ -16,11 +16,11 @@
 |     Tasks     |    Assigned   |    Status     |
 | ------------- | ------------- | ------------- |
 | Reconfigurable Shell Prompt  | Name  | incomplete / in-progress / completed |
-| Built-in command `pwd` | | |
-| Directory walk `cd` | | | 
-| Wild card characters | | | 
-| Standard input & output redirection `<` and `>` | | |
-| Shell pipeline `\|` | | | 
-| Background job execution `&` | | | 
-| The shell environment | | |
-| Built-in command `exit` | | |
+| Built-in command `pwd` | | incomplete |
+| Directory walk `cd` | | incomplete | 
+| Wild card characters | | incomplete | 
+| Standard input & output redirection `<` and `>` | | incomplete |
+| Shell pipeline `\|` | | incomplete | 
+| Background job execution `&` | | incomplete | 
+| The shell environment | | incomplete |
+| Built-in command `exit` | | incomplete |
