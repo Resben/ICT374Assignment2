@@ -21,11 +21,11 @@ int main(void)
 {
 	char *token[MAX_NUM_TOKENS]; // max is 1000
 	char input[BUFF_SIZE]; 
-	char *prompt = "% "; // default prompt
+	char *prompt = "%"; // default prompt
 	pid_t pid;
 
 	while (1) {
-		printf("%s", prompt);
+		printf("%s ", prompt);
 		fgets(input, BUFF_SIZE, stdin);
 		if (strcmp(input, "exit\n") == 0) { // this needs to be modified to be a built-in command 
 			break;	
