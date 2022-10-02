@@ -17,7 +17,7 @@
 
 |     Tasks     |    Assigned   |    Status     |
 | ------------- | ------------- | ------------- |
-| Reconfigurable Shell Prompt  | Michaela  | in-progress |
+| Reconfigurable Shell Prompt  | Michaela  | Completed |
 | Built-in command `pwd` | Michaela | in-progress |
 | Directory walk `cd` | | incomplete | 
 | Wild card characters | | incomplete | 
