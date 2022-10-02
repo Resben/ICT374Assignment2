@@ -4,13 +4,11 @@
  * date:	02-Oct-22
  */
 
-#include <string.h>
-
 void update_prompt(char** oldPrompt, char* newPrompt)
 {
 	if(newPrompt) { // return if no newPrompt provided
-		strcat(newPrompt, " "); // add a space after the prompt
 		*oldPrompt = newPrompt;
-	} 
+	}
+       return;	
 }
 
