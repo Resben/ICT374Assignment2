@@ -5,7 +5,6 @@
  */
 
 #include <string.h>
-#include <stdio.h>//to delete
 
 void update_prompt(char** oldPrompt, char* newPrompt)
 {
