@@ -1,6 +1,6 @@
 #makefile for main
 
-main: main.o ./src/token.o 
+main: main.o ./src/token.o
 	gcc main.o ./src/token.o -o main
 
 main.o: main.c ./include/token.h
