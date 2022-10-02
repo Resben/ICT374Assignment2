@@ -5,6 +5,7 @@
  */
 
 #include <string.h>
+#include <stdio.h>//to delete
 
 void update_prompt(char** oldPrompt, char* newPrompt)
 {
@@ -12,6 +13,5 @@ void update_prompt(char** oldPrompt, char* newPrompt)
 		strcat(newPrompt, " "); // add a space after the prompt
 		*oldPrompt = newPrompt;
 	} 
-	return;
 }
 

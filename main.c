@@ -22,6 +22,8 @@ int main(void)
 	char *token[MAX_NUM_TOKENS]; // max is 1000
 	char input[BUFF_SIZE]; 
 	char *prompt = "% "; // default prompt
+	pid_t pid;
+
 	while (1) {
 		printf("%s", prompt);
 		fgets(input, BUFF_SIZE, stdin);
@@ -31,13 +33,13 @@ int main(void)
 
 		tokenise(input, token); // separate input into tokens
 
-		for(int i = 0; token[i] != NULL; i++) { 
-			if (strcmp(token[i], "pwd") == 0) {
-				execute("./src/pwd", "pwd", pid);
-			}
+		for(int i = 0; token[i] != NULL; i++) {
 			// check if prompt need to be updated
 			if (strcmp(token[i], "prompt") == 0) {
 				update_prompt(&prompt, token[i+1]);
+			}
+			if (strcmp(token[i], "pwd") == 0) {
+				execute("./src/pwd", "pwd", pid);
 			}
 		}
 	}
