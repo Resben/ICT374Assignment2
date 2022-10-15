@@ -41,6 +41,9 @@ int main(void)
 			if (strcmp(token[i], "pwd") == 0) {
 				execute("./src/pwd", "pwd", pid);
 			}
+			if (strcmp(token[i], "exit") == 0) {
+				execute("./src/exit", "exit", pid);
+			}
 		}
 	}
 	
