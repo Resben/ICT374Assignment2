@@ -10,6 +10,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include "include/command.h"
 #include "include/token.h"
 #include "include/prompt.h"
 
@@ -19,8 +20,10 @@ void execute(char *executablePath, char *executable, pid_t pid);
 
 int main(void)
 {
-	char *token[MAX_NUM_TOKENS]; // max is 1000
-	char input[BUFF_SIZE]; 
+	char input[BUFF_SIZE];             // unprocessed input from stdin
+	char *token[MAX_NUM_TOKENS];	   // holds tokenised form of input string
+	Command command[MAX_NUM_COMMANDS]; // tokens have been converted into command objects
+	int total_cmds;
 	char *prompt = "%"; // default prompt
 	pid_t pid;
 
@@ -29,19 +32,21 @@ int main(void)
 		fgets(input, BUFF_SIZE, stdin);
 		if (strcmp(input, "exit\n") == 0) { // this needs to be modified to be a built-in command 
 			break;	
-		} 
-
-		tokenise(input, token); // separate input into tokens
-
-		for(int i = 0; token[i] != NULL; i++) {
-			// check if prompt need to be updated
-			if (strcmp(token[i], "prompt") == 0) {
-				update_prompt(&prompt, token[i+1]);
-			}
-			if (strcmp(token[i], "pwd") == 0) {
-				execute("./src/pwd", "pwd", pid);
-			}
 		}
+
+		tokenise(input, token);
+
+		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills									  // command with each separate command
+		for (int i = 0; i < total_cmds; ++i) { // run through each command
+			for (int j = command[i].first; j < command[i].last; ++j) { // run through each token of a command
+				if (strcmp(token[j], "prompt") == 0) {
+					update_prompt(&prompt, token[j+1]);
+				}
+				if (strcmp(token[j], "pwd") == 0) {
+					execute("./src/pwd", "pwd", pid);
+				}
+			} // end for
+		} // end for
 	}
 	
 	exit(0);
