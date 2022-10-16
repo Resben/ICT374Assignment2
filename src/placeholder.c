@@ -3,7 +3,7 @@
  * author:	BH
  * date:	16-Oct-22
  */
-
+#include <stdio.h>
 #include "../include/placeholder.h"
 
 int find(const char* input, const char* replaced_word);
@@ -14,14 +14,16 @@ char* replace_placeholders(const char* input)
     int i = 0;
     char* placeholders[] = {pwd, NULL};
     char* newInput;
+    char path[100];
 
     while (placeholders[i] != NULL) {
-        if(placeholders[i] == pwd && getenv("PWD") != NULL) {
-            newInput = replace(input, placeholders[i], getenv("PWD"));
+        if(placeholders[i] == pwd) {
+            newInput = replace(input, placeholders[i], getcwd(path, 100));
         }
         //Add more if statements for more placeholders
         i++;
     }
+
     return newInput;
 }
 
@@ -30,7 +32,7 @@ char* replace(const char* input, const char* replaced_word, const char* replace_
     int start = find(input, replaced_word);
 
         // Return the normal input string if not found
-    if(start <= 0) {
+    if(start < 0) {
         char* nullString = (char*)malloc(strlen(input) * sizeof(char));
         nullString[0] = '\0';
         strcat(nullString, input);

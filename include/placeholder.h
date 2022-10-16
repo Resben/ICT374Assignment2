@@ -5,7 +5,7 @@
 */
 #include <string.h>
 #include <stdlib.h>
-
+#include <unistd.h>
 
 #define pwd "${pwd}"        // The following string is replaced with the current path
 

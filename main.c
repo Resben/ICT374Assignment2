@@ -23,8 +23,8 @@ int main(void)
 {
 	char *token[MAX_NUM_TOKENS]; // max is 1000
 	char input[BUFF_SIZE]; 
-	char *prompt = "%"; // default prompt 
-	char *prompt_out;
+	char *prompt = "%"; // default prompt
+	char *prompt_out; 
 	pid_t pid;
 
 	while (1) {

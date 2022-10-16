@@ -14,7 +14,6 @@
 void cd(char *path)
 {
 	char s[100];
-	printf("Before: %s\n", getcwd(s, 100));
 
 	char *newPath;
 
@@ -26,5 +25,4 @@ void cd(char *path)
 	}
 
 	chdir(newPath);
-	printf("Before: %s\n", getcwd(s, 100));
 }
