@@ -26,3 +26,10 @@
 | Background job execution `&` | | incomplete | 
 | The shell environment | | incomplete |
 | Built-in command `exit` | Michaela | in progress |
+
+
+### Bug Tracker
+***
+| Issue | Assigned | Status | 
+| ----- | -------- | ------ |
+|       |          |        |
