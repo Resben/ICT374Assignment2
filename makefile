@@ -1,7 +1,7 @@
 #makefile for main
 
-main: main.o ./src/token.o ./src/prompt.o ./src/cd.o ./src/placeholder.o
-	gcc main.o ./src/token.o ./src/prompt.o ./src/cd.o ./src/placeholder.o -o main
+main: main.o ./src/token.o ./src/prompt.o ./src/cd.o ./src/placeholder.o ./src/wildcard.o
+	gcc main.o ./src/token.o ./src/prompt.o ./src/cd.o ./src/placeholder.o ./src/wildcard.o -o main
 
 main.o: main.c ./include/token.h ./include/prompt.h
 	gcc -c main.c
@@ -17,6 +17,9 @@ cd.o: ./src/cd.c ./include/cd.h
 
 placeholder.o: ./src/placeholder.c ./include/placeholder.h
 	gcc -c ./src/placeholder.c
+
+wildcard.o: ./src/wildcard.c ./include/placeholder.placeholder
+	gcc -c ./src/wildcard.c
 
 clean: 
 	rm *.o
