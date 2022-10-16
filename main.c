@@ -27,9 +27,6 @@ int main(void)
 	while (1) {
 		printf("%s ", prompt);
 		fgets(input, BUFF_SIZE, stdin);
-		if (strcmp(input, "exit\n") == 0) { // this needs to be modified to be a built-in command 
-			break;	
-		} 
 
 		tokenise(input, token); // separate input into tokens
 
