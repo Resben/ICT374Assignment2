@@ -12,6 +12,7 @@
 #include <sys/wait.h>
 #include "include/token.h"
 #include "include/prompt.h"
+#include "include/cd.h"
 
 #define BUFF_SIZE 256
 
@@ -40,6 +41,9 @@ int main(void)
 			}
 			if (strcmp(token[i], "pwd") == 0) {
 				execute("./src/pwd", "pwd", pid);
+			}
+			if (strcmp(token[i], "cd") == 0) {
+				cd(token[i+1]);
 			}
 		}
 	}
