@@ -32,4 +32,5 @@
 ***
 | Issue | Assigned | Status | 
 | ----- | -------- | ------ |
-|       |          |        |
+| prompt function breaks when: prompt set then a command is issued with two arguments |  | Incomplete |
+| pwd function will break when the directory changes | | Incomplete |
