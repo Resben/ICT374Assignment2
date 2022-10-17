@@ -25,7 +25,7 @@
 | Shell pipeline `\|` | | incomplete | 
 | Background job execution `&` | | incomplete | 
 | The shell environment | | incomplete |
-| Built-in command `exit` | Michaela | in progress |
+| Built-in command `exit` | Michaela | Completed |
 
 
 ### Bug Tracker
