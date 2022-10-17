@@ -25,4 +25,12 @@
 | Shell pipeline `\|` | | incomplete | 
 | Background job execution `&` | | incomplete | 
 | The shell environment | | incomplete |
-| Built-in command `exit` | | incomplete |
+| Built-in command `exit` | Michaela | in progress |
+
+
+### Bug Tracker
+***
+| Issue | Assigned | Status | 
+| ----- | -------- | ------ |
+| prompt function breaks when: prompt set then a command is issued with two arguments |  | Incomplete |
+| pwd function will break when the directory changes | | Incomplete |

@@ -30,13 +30,11 @@ int main(void)
 	while (1) {
 		printf("%s ", prompt);
 		fgets(input, BUFF_SIZE, stdin);
-		if (strcmp(input, "exit\n") == 0) { // this needs to be modified to be a built-in command 
-			break;	
-		}
 
 		tokenise(input, token);
 
-		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills									  // command with each separate command
+		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills									  
+                                                   // command with each separate command
 		for (int i = 0; i < total_cmds; ++i) { // run through each command
 			for (int j = command[i].first; j < command[i].last; ++j) { // run through each token of a command
 				if (strcmp(token[j], "prompt") == 0) {
@@ -45,10 +43,13 @@ int main(void)
 				if (strcmp(token[j], "pwd") == 0) {
 					execute("./src/pwd", "pwd", pid);
 				}
-			} // end for
-		} // end for
-	}
-	
+        if (strcmp(token[j], "exit") == 0) {
+          execute("./src/exit", "exit", pid);
+        }
+			} // end for commands
+		} // end for tokens
+	} // end while
+  
 	exit(0);
 }
 
