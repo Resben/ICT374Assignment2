@@ -87,7 +87,6 @@ void execute(Command* command)
 	defaultargv[1] = NULL;
 
 	if (command->stdout_file != NULL) { // 1 for stdout redirect 2 for stdin redirect 0 for no redirection
-		printf("yo");
 		rd = 1;
 		ofd = open(command->stdout_file, O_CREAT | O_WRONLY | O_TRUNC, 0666);
 		if (!ofd) { 
