@@ -17,7 +17,7 @@
 
 #define BUFF_SIZE 256
 
-void execute(int rd, char *file, char *executablePath, char *executable, pid_t pid); 
+void execute(int rd, char *file, char *executablePath, char **args, pid_t pid); 
 
 int main(void)
 {
@@ -33,37 +33,35 @@ int main(void)
 		fgets(input, BUFF_SIZE, stdin);
 		
 		tokenise(input, token);
-		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills								      // command with each separate command
+		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills					
+							       // command with each separate command
 		for (int i = 0; i < total_cmds; ++i) { // run through each command
-			for (int j = command[i].first; j < command[i].last; ++j) { // run through each token of a command
-				if (command[i].last > 2 && command->stdout_file != NULL) { // check for stdout redirection
-					if (strcmp(token[j+1], command->stdout_file) == 0) { // check if next token redirection
-						execute(1, token[j+1], token[j-1], token[j-1], pid);
-						j += 2;
-					}
-				} else if (command[i].last > 2 && command->stdin_file != NULL) { // check for stdin redirection
-					if (strcmp(token[j+1], command->stdin_file) == 0) { // check if next token redirection
-						execute(2, token[j+1], token[j-1], token[j-1], pid); 
-						j += 2;
-					}
-				} else if (strcmp(token[j], "prompt") == 0) {
-					update_prompt(&prompt, token[j+1]);
-					++j;
-				} else if (strcmp(token[j], "pwd") == 0) {
-					execute(0, NULL, "./src/pwd", "pwd", pid);
-				} else if (strcmp(token[j], "exit") == 0) {
-					execute(0, NULL, "./src/exit", "exit", pid);
-        			} else {
-					execute(0, NULL, token[j], token[j], pid);
-				}
-			} // end for commands
-		} // end for tokens
+			if (command->stdout_file != NULL) { // check for stdout redirection
+				//if (strcmp(token[j+1], command->stdout_file) == 0) { // check if next token redirection
+					//execute(1, token[j+1], token[j-1], token[j-1], pid);
+				//}
+			} else if (command->stdin_file != NULL) { // check for stdin redirection
+				//if (strcmp(token[j+1], command->stdin_file) == 0) { // check if next token redirection
+					//execute(2, token[j+1], token[j-1], token[j-1], pid); 
+				//}
+			} else if (strcmp(command->argv[0], "prompt") == 0) {
+				update_prompt(&prompt, command->argv[1]);
+			} else if (strcmp(command->argv[0], "pwd") == 0) {
+				execute(0, NULL, "./src/pwd", command->argv, pid);
+			} else if (strcmp(command->argv[0], "exit") == 0) {
+				execute(0, NULL, "./src/exit", command->argv, pid);
+        		} else {
+				char shellCmd[BUFF_SIZE] = "/usr/bin/";
+				strcat(shellCmd, command->argv[0]);
+				execute(0, NULL, shellCmd, command->argv, pid);
+			}
+		} // end for commands
 	} // end while
   
 	exit(0);
 }
 
-void execute(int rd, char *file, char *executablePath, char *executable, pid_t pid) 
+void execute(int rd, char *file, char *executablePath, char **args, pid_t pid) 
 {
 	int ofd; // stdout redirection
 	int ifd; // stdin redirection
@@ -99,8 +97,8 @@ void execute(int rd, char *file, char *executablePath, char *executable, pid_t p
 			close(ifd);
 		}
 
-		if (execlp(executablePath, executable, NULL) < 0) { // execute commnd
-			printf("Command '%s' failed\n", executable); // report execlp failure
+		if (execv(executablePath, args) < 0) { // execute commnd
+			printf("Command '%s' failed\n", args[0]); // report execlp failure
 			kill(cldPid, SIGKILL); // child process isn't left hanging after execlp failure
 		} 
 	} else { // parent
