@@ -51,6 +51,9 @@ int main(void)
 				} else if (strcmp(token[j], "prompt") == 0) {
 					update_prompt(&prompt, token[j+1]);
 					++j;
+				} else if (strcmp(token[j], "cd") == 0) {
+					cd(token[j+1]);
+					++j;
 				} else if (strcmp(token[j], "pwd") == 0) {
 					execute(0, NULL, "./src/pwd", "pwd", pid);
 				} else if (strcmp(token[j], "exit") == 0) {
