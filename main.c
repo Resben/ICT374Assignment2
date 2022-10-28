@@ -36,12 +36,16 @@ int main(void)
 		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills								      // command with each separate command
 		for (int i = 0; i < total_cmds; ++i) { // run through each command
 			for (int j = command[i].first; j < command[i].last; ++j) { // run through each token of a command
-				if (command[i].last > 2 && strcmp(token[j+1], command->stdout_file) == 0) {
-					execute(1, token[j+1], token[j-1], token[j-1], pid);
-					j += 2;
-				} else if (command[i].last > 2 && strcmp(token[j+1], command->stdout_file) == 0) {
-					execute(2, token[j+1], token[j-1], token[j-1], pid);
-					j += 2;
+				if (command[i].last > 2 && command->stdout_file != NULL) { // check for stdout redirection
+					if (strcmp(token[j+1], command->stdout_file) == 0) { // check if next token redirection
+						execute(1, token[j+1], token[j-1], token[j-1], pid);
+						j += 2;
+					}
+				} else if (command[i].last > 2 && command->stdin_file != NULL) { // check for stdin redirection
+					if (strcmp(token[j+1], command->stdin_file) == 0) { // check if next token redirection
+						execute(2, token[j+1], token[j-1], token[j-1], pid); 
+						j += 2;
+					}
 				} else if (strcmp(token[j], "prompt") == 0) {
 					update_prompt(&prompt, token[j+1]);
 					++j;
