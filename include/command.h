@@ -20,6 +20,8 @@
 struct CommandStruct {
 	int first;		// token to the first token in the array "token" of the command
 	int last; 		// token to the last token in the arrya "token" of the command
+    int argc;
+    char *path;
 	char *sep;		// the command separator that follows the commnand, must be "|", "&" or ";"
 	char **argv;		// an array of tokens that form a command
 	char *stdin_file;	// if not NULL points to the file name for stdin redirection
