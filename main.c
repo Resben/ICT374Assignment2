@@ -30,22 +30,21 @@ int main(void)
 	while (1) {
 		printf("%s ", prompt);
 		fgets(input, BUFF_SIZE, stdin);
-
+		
 		tokenise(input, token);
-
-		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills									  
-                                                   // command with each separate command
+		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills								      // command with each separate command
 		for (int i = 0; i < total_cmds; ++i) { // run through each command
 			for (int j = command[i].first; j < command[i].last; ++j) { // run through each token of a command
 				if (strcmp(token[j], "prompt") == 0) {
 					update_prompt(&prompt, token[j+1]);
-				}
-				if (strcmp(token[j], "pwd") == 0) {
+					++j;
+				} else if (strcmp(token[j], "pwd") == 0) {
 					execute("./src/pwd", "pwd", pid);
+				} else if (strcmp(token[j], "exit") == 0) {
+					execute("./src/exit", "exit", pid);
+        			} else {
+					execute(token[j], token[j], pid);
 				}
-        if (strcmp(token[j], "exit") == 0) {
-          execute("./src/exit", "exit", pid);
-        }
 			} // end for commands
 		} // end for tokens
 	} // end while
@@ -60,11 +59,14 @@ void execute(char *executablePath, char *executable, pid_t pid)
 		exit(1);
 	}
 
+	pid_t pPid = getppid();
+	pid_t cldPid = getpid();
+
 	if (pid == 0) { // child
 		if (execlp(executablePath, executable, NULL) < 0) { // execute commnd
-			printf("execlp error\n"); // report error if command fails to execute
+			printf("Command '%s' failed\n", executable); // report error if command fails to execute
+		kill(cldPid, SIGKILL); // makes sure the child process isn't left hanging after execlp failure
 		}
-		return;
 	} else {
 		wait((int*)0); // wait for child process to finish
 		return;
