@@ -21,7 +21,7 @@
 | Built-in command `pwd` | Michaela | Completed |
 | Directory walk `cd` | | incomplete | 
 | Wild card characters | | incomplete | 
-| Standard input & output redirection `<` and `>` | | incomplete |
+| Standard input & output redirection `<` and `>` | Michaela | in progress |
 | Shell pipeline `\|` | | incomplete | 
 | Background job execution `&` | | incomplete | 
 | The shell environment | | incomplete |
