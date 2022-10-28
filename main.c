@@ -5,6 +5,7 @@
  * date:        2-Oct-22
  */
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,6 +33,10 @@ int main(void)
 	char *prompt_out; // output prompt
 	char *wildcard_array[MAX_WILDCARDS];
 	pid_t pid;
+
+	signal(SIGTSTP,SIG_IGN); /*	Disable CTRL-Z */
+	signal(SIGINT,SIG_IGN);	/* Disable CTRL-C */
+	signal(SIGQUIT,SIG_IGN); /* Disable CTRL-\ */
 
 	while (1) {
 		prompt_out = replace_placeholders(prompt);
