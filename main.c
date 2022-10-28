@@ -47,8 +47,6 @@ int main(void)
 		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills								      // command with each separate command
 		for (int i = 0; i < total_cmds; ++i) { // run through each command
 
-			//printf("Path: %s\nArgc: %d\nArgv 0: %s\nArgv 1: %s\n", command[i].path, command[i].argc, command[i].argv[0], command[i].argv[1]);
-
 			if(strcmp(command[i].path, "pwd") == 0)
 			{
 				command[i].path = "./src/pwd";
