@@ -21,7 +21,7 @@
 | Built-in command `pwd` | Michaela | Completed |
 | Directory walk `cd` | | incomplete | 
 | Wild card characters | | incomplete | 
-| Standard input & output redirection `<` and `>` | Michaela | in progress |
+| Standard input & output redirection `<` and `>` | Michaela | Completed |
 | Shell pipeline `\|` | | incomplete | 
 | Background job execution `&` | | incomplete | 
 | The shell environment | | incomplete |
@@ -34,3 +34,4 @@
 | ----- | -------- | ------ |
 | prompt function breaks when: prompt set then a command is issued with two arguments |  | Incomplete |
 | pwd function will break when the directory changes | | Incomplete |
+| Stdin < redirection results in a segmentation fault | | Incomplete |
