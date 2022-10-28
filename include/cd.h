@@ -6,4 +6,4 @@
  */
 
 // Changes the directory of the shell
-void cd(char *path);
+int cd(char *path);

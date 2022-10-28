@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include "../include/cd.h"
 
-void cd(char *path)
+int cd(char *path)
 {
 	char s[100];
 
@@ -25,4 +25,5 @@ void cd(char *path)
 	}
 
 	chdir(newPath);
+	return setenv("PWD", getcwd(s, 100), 1);
 }
