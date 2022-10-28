@@ -19,8 +19,8 @@
 | ------------- | ------------- | ------------- |
 | Reconfigurable Shell Prompt  | Michaela  | Completed |
 | Built-in command `pwd` | Michaela | Completed |
-| Directory walk `cd` | | incomplete | 
-| Wild card characters | | incomplete | 
+| Directory walk `cd` | Ben | Completed | 
+| Wild card characters | Ben | Review | 
 | Standard input & output redirection `<` and `>` | Michaela | Completed |
 | Shell pipeline `\|` | | incomplete | 
 | Background job execution `&` | | incomplete | 
