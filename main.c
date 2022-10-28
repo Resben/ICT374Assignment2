@@ -14,6 +14,9 @@
 #include "include/command.h"
 #include "include/token.h"
 #include "include/prompt.h"
+#include "include/cd.h"
+#include "include/placeholder.h"
+#include "include/wildcard.h"
 
 #define BUFF_SIZE 256
 
@@ -26,10 +29,13 @@ int main(void)
 	Command command[MAX_NUM_COMMANDS]; // tokens have been converted into command objects
 	int total_cmds;
 	char *prompt = "%"; // default prompt
+	char *prompt_out; // output prompt
+	char *wildcard_array[MAX_WILDCARDS];
 	pid_t pid;
 
 	while (1) {
-		printf("%s ", prompt);
+		prompt_out = replace_placeholders(prompt);
+		printf("%s ", prompt_out);
 		fgets(input, BUFF_SIZE, stdin);
 		
 		tokenise(input, token);
@@ -44,6 +50,9 @@ int main(void)
 					j += 2;
 				} else if (strcmp(token[j], "prompt") == 0) {
 					update_prompt(&prompt, token[j+1]);
+					++j;
+				} else if (strcmp(token[j], "cd") == 0) {
+					cd(token[j+1]);
 					++j;
 				} else if (strcmp(token[j], "pwd") == 0) {
 					execute(0, NULL, "./src/pwd", "pwd", pid);
