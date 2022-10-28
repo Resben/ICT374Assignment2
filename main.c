@@ -61,11 +61,11 @@ int main(void)
 			}
 			else if(strcmp(command[i].path, "cd") == 0)
 			{
-				cd(command[i].argv[0]);
+				cd(command[i].argv[1]);
 			}
 			else if(strcmp(command[i].path, "prompt") == 0)
 			{
-				update_prompt(&prompt, command[i].argv[0]);
+				update_prompt(&prompt, command[i].argv[1]);
 			}
 			else
 			{
