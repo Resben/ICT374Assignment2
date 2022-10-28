@@ -29,7 +29,6 @@ int main(void)
 	char *token[MAX_NUM_TOKENS];	   // holds tokenised form of input string
 	Command command[MAX_NUM_COMMANDS]; // tokens have been converted into command objects
 	int total_cmds;
-	char shellCmd[BUFF_SIZE] = "/usr/bin/";
 	char *prompt = "%"; // default prompt
 	char *prompt_out; // output prompt
 	char *wildcard_array[MAX_WILDCARDS];
@@ -48,6 +47,8 @@ int main(void)
 		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills								      // command with each separate command
 		for (int i = 0; i < total_cmds; ++i) { // run through each command
 
+			printf("Path: %s\nArgc: %d\nArgv 0: %s\nArgv 1: %s\n", command[i].path, command[i].argc, command[i].argv[0], command[i].argv[1]);
+
 			if(strcmp(command[i].path, "pwd") == 0)
 			{
 				command[i].path = "./src/pwd";
@@ -60,16 +61,14 @@ int main(void)
 			}
 			else if(strcmp(command[i].path, "cd") == 0)
 			{
-				cd(command->argv[0]);
+				cd(command[i].argv[0]);
 			}
 			else if(strcmp(command[i].path, "prompt") == 0)
 			{
-				update_prompt(&prompt, command->argv[0]);
+				update_prompt(&prompt, command[i].argv[0]);
 			}
 			else
 			{
-				strcat(shellCmd, command[i].path);
-				command->path = shellCmd;
 				execute(&command[i]);
 			}
 		}
@@ -83,6 +82,9 @@ void execute(Command* command)
 	pid_t pid;
 	int ofd; // stdout redirection
 	int ifd; // stdin redirection
+	char *defaultargv[2];
+	defaultargv[0] = command->path;
+	defaultargv[1] = NULL;
 
 	if (command->stdout_file != NULL) { // 1 for stdout redirect 2 for stdin redirect 0 for no redirection
 		rd = 1;
@@ -115,16 +117,18 @@ void execute(Command* command)
 			dup2(ifd, 0); // replaces stdin with ifd
 			close(ifd);
 		}
-		if(command->argv == NULL) {
-			command->argv[0] = "";
+
+		if(command->argv != NULL) {
+			if (execvp(command->path, command->argv) < 0) { // execute commnd
+				printf("Command '%s' failed\n", command->path); // report execlp failure
+				kill(cldPid, SIGKILL); // child process isn't left hanging after execlp failure
+			}
+		} else {
+			if (execvp(command->path, defaultargv) < 0) { // execute commnd
+				printf("Command 2 '%s' failed\n", command->path); // report execlp failure
+				kill(cldPid, SIGKILL); // child process isn't left hanging after execlp failure
+			}
 		}
-		if(command->argv == NULL) {
-			printf("Did");
-		}
-		if (execv(command->path, command->argv) < 0) { // execute commnd
-			printf("Command '%s' failed\n", command->path); // report execlp failure
-			kill(cldPid, SIGKILL); // child process isn't left hanging after execlp failure
-		} 
 	} else { // parent
 			if (rd == 1) {
 				close(ofd);
