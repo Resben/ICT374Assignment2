@@ -19,8 +19,8 @@
 | ------------- | ------------- | ------------- |
 | Reconfigurable Shell Prompt  | Michaela  | Completed |
 | Built-in command `pwd` | Michaela | Completed |
-| Directory walk `cd` | | incomplete | 
-| Wild card characters | | incomplete | 
+| Directory walk `cd` | Ben | Completed | 
+| Wild card characters | Ben | Review | 
 | Standard input & output redirection `<` and `>` | Michaela | Completed |
 | Shell pipeline `\|` | | incomplete | 
 | Background job execution `&` | | incomplete | 
@@ -32,6 +32,6 @@
 ***
 | Issue | Assigned | Status | 
 | ----- | -------- | ------ |
-| prompt function breaks when: prompt set then a command is issued with two arguments |  | Incomplete |
+| prompt function breaks when: prompt set then a command is issued with two arguments | Michaela | In progress |
 | pwd function will break when the directory changes | | Incomplete |
 | Stdin < redirection results in a segmentation fault | | Incomplete |
