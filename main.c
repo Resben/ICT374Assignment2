@@ -34,7 +34,7 @@ int main(void)
 	char *wildcard_array[MAX_WILDCARDS];
 	pid_t pid;
 
-	signal(SIGTSTP, SIG_IGN); /*	Disable CTRL-Z */
+	signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
 	signal(SIGINT, SIG_IGN);	/* Disable CTRL-C */
 	//signal(SIGQUIT, SIG_IGN); /* Disable CTRL-\ */
 
@@ -49,12 +49,12 @@ int main(void)
 
 			if(strcmp(command[i].path, "pwd") == 0)
 			{
-				command[i].path = "./src/pwd";
+				command[i].path = "./src/pwd";	//todo
 				execute(&command[i]);
 			}
 			else if(strcmp(command[i].path, "exit") == 0)
 			{
-				command[i].path = "./src/exit";
+				command[i].path = "./src/exit";	//todo
 				execute(&command[i]);
 			}
 			else if(strcmp(command[i].path, "cd") == 0)
