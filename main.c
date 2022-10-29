@@ -80,9 +80,6 @@ void execute(Command* command)
 	pid_t pid;
 	int ofd; // stdout redirection
 	int ifd; // stdin redirection
-	char *defaultargv[2];
-	defaultargv[0] = command->path;
-	defaultargv[1] = NULL;
 
 	if (command->stdout_file != NULL) { // 1 for stdout redirect 2 for stdin redirect 0 for no redirection
 		rd = 1;
@@ -92,6 +89,7 @@ void execute(Command* command)
 			exit(1);
 		}
 	} else if (command->stdin_file != NULL) { // stdin redirection
+		rd = 2;
 		ifd = open(command->stdin_file, O_RDONLY);
 		if (!ifd) {
 			perror("open");
