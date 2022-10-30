@@ -78,23 +78,34 @@ int main(void)
 			else if(strcmp(command[i].sep, pipeSep) == 0)
 			{
 				int size = 0;
-				printf("Pipe");
 				Command newArray[MAX_PIPES];
 				for(int z = i; z < total_cmds; z++) {
-					if(strcmp(command[z].sep, pipeSep)) {
-						printf("Match");
-						newArray[z] = command[z];
-						size++;
-						if(size == MAX_PIPES) {
-							printf("Too many pipes");
-							break;
-						}
+					printf("%d: %s\n", z, command[z].sep);
+					 if(strcmp(command[z].sep, pipeSep) == 0) {
+					 	newArray[z] = command[z];
+					 	size++;
+					 	if(size == MAX_PIPES) {
+					 		printf("ERROR: To many pipes\n");
+					 		flag_error = 1;
+				 			break;
+					 	}
 					} else {
-						break;
+						if(command[z].argv[0] != NULL) {
+							newArray[z] = command[z];
+							size++;
+							break;
+						} else { // May not be needed
+							printf("ERROR: Invalid pipe");
+							size++;
+							flag_error = 1;
+					 		break;
+						}
 					}
 				}
-				executePipe(newArray, size);
-				i += size;
+				if(flag_error == 0) {
+					executePipe(newArray, size);
+				}
+				i += size - 1;
 			}
 			else
 			{
@@ -164,8 +175,6 @@ void execute(Command* command)
 			wait((int*)0); // wait for child process to finish
 		}
 
-
-
 		if(strcmp(command->sep, conSep) == 0) {
 			printf("\n[%d] Waiting\n\n", cldPid);
 		}
@@ -175,7 +184,7 @@ void execute(Command* command)
 
 void executePipe(Command command[], int size)
 {
-	printf("%d\n", size);
+	printf("Piped in: %d\n", size);
 }
 
 void catch(int signo)
@@ -184,6 +193,6 @@ void catch(int signo)
 	int status;
 
 	if(signo == SIGCHLD) {
-		while((pid = waitpid(-1, &status, WNOHANG)) > 0);
-	}
+		while((pid = waitpid(-1, &status, WNOHANG)) > 0); 	// Results in sending two of the same execute once when it finishes
+	}														// again when this waitpid is run
 }
