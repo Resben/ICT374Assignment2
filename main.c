@@ -35,7 +35,14 @@ int main(void)
 	char *prompt = "%"; // default prompt
 	char *prompt_out; // output prompt
 	char *wildcard_array[MAX_WILDCARDS];
+	int flag_error = 0;
 	pid_t pid;
+
+	struct sigaction act;
+	act.sa_handler = catch;
+	sigaction(SIGINT, &act, NULL);
+	sigaction(SIGALRM, &act, NULL);
+	sigaction(SIGCHLD, &act, NULL);
 
 	signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
 	signal(SIGINT, SIG_IGN);	/* Disable CTRL-C */
@@ -104,12 +111,6 @@ void execute(Command* command)
 	pid_t pid;
 	int ofd; // stdout redirection
 	int ifd; // stdin redirection
-
-	struct sigaction act;
-	act.sa_handler = catch;
-	sigaction(SIGINT, &act, NULL);
-	sigaction(SIGALRM, &act, NULL);
-	sigaction(SIGCHLD, &act, NULL);	
 
 	if (command->stdout_file != NULL) { // 1 for stdout redirect 2 for stdin redirect 0 for no redirection
 		rd = 1;
