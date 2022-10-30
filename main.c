@@ -122,8 +122,10 @@ void execute(Command* command)
 	} else { // parent
 			if (rd == 1) {
 				close(ofd);
+				command->stdout_file = NULL;
 			} else if (rd == 2) {
 				close(ifd);
+				command->stdin_file = NULL;
 			}
 
 			wait((int*)0); // wait for child process to finish
