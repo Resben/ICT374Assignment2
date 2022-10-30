@@ -32,6 +32,6 @@
 ***
 | Issue | Assigned | Status | 
 | ----- | -------- | ------ |
-| prompt function breaks when: prompt set then a command is issued with two arguments | Michaela | In progress |
+| prompt function breaks when: prompt set then a command is issued with two arguments | Michaela | Completed |
 | pwd function will break when the directory changes | | Incomplete |
 | Stdin < redirection results in a segmentation fault | | Incomplete |
