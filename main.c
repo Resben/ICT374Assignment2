@@ -20,7 +20,9 @@
 #include "include/wildcard.h"
 
 #define BUFF_SIZE 256
+#define MAX_PIPES 5
 
+void executePipe(Command command[], int size);
 void execute(Command* command); 
 void catch(int signo);
 
@@ -65,6 +67,27 @@ int main(void)
 			else if(strcmp(command[i].path, "prompt") == 0)
 			{
 				update_prompt(&prompt, command[i].argv[1]);
+			}
+			else if(strcmp(command[i].sep, pipeSep) == 0)
+			{
+				int size = 0;
+				printf("Pipe");
+				Command newArray[MAX_PIPES];
+				for(int z = i; z < total_cmds; z++) {
+					if(strcmp(command[z].sep, pipeSep)) {
+						printf("Match");
+						newArray[z] = command[z];
+						size++;
+						if(size == MAX_PIPES) {
+							printf("Too many pipes");
+							break;
+						}
+					} else {
+						break;
+					}
+				}
+				executePipe(newArray, size);
+				i += size;
 			}
 			else
 			{
@@ -139,6 +162,8 @@ void execute(Command* command)
 		if(strcmp(command->sep, seqSep) == 0) {
 			wait((int*)0); // wait for child process to finish
 		}
+
+
 
 		if(strcmp(command->sep, conSep) == 0) {
 			printf("\n[%d] Waiting\n\n", cldPid);
