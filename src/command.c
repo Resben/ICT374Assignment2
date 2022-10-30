@@ -76,7 +76,6 @@ void buildCommandArgumentArray(char *token[], Command *cp) {
 			|| strcmp(token[i], pipeSep) == 0 || strcmp(token[i], conSep) == 0 || strcmp(token[i], seqSep) == 0) {
 			++i; // skip off the std in/out redirection
 		} else {
-			printf("Token %d: %s\n", i, token[i]);
 			cp->argv[k] = token[i];
 			++k;
 		}
