@@ -71,16 +71,17 @@ void buildCommandArgumentArray(char *token[], Command *cp) {
 	// build the argument vector
 	int i;
 	int k = 0;
-	for (i=0; i<=cp->last; ++i) {
+	for (i=cp->first; i<=cp->last; ++i) {
 		if (strcmp(token[i], "<") == 0 || strcmp(token[i], ">") == 0
 			|| strcmp(token[i], pipeSep) == 0 || strcmp(token[i], conSep) == 0 || strcmp(token[i], seqSep) == 0) {
 			++i; // skip off the std in/out redirection
 		} else {
+			printf("Token %d: %s\n", i, token[i]);
 			cp->argv[k] = token[i];
 			++k;
 		}
 	}
-	cp->path = token[0];
+	cp->path = cp->argv[0];
 	cp->argc = k;
 	cp->argv[k] = (char *)0;
 }
