@@ -38,4 +38,4 @@
 | Stdin < redirection has issues with newly created files | Michaela | Complete |
 | prompt function will break with a command like this: `ls -l` wont break on `blah blah` prompt function without placeholder will break on three arguments but not on `ls -l` but will break on `ls -la` ????: suggestion fix prompt without placeholder first, likely related | | Incomplete |
 | (For branch Separtors) Command `ls &` will result with two outputs --> called when it finishes and when we check if it finishes using SIGCHLD | | Incomplete | 
-| Multi commands aren't actually working `ls ; ps ; whoami ;` is all just ls commands |  | Incomplete |
+| Multi commands aren't actually working `ls ; ps ; whoami ;` is all just ls commands | Ben | Complete (See seperator branch) |
