@@ -71,15 +71,18 @@ void buildCommandArgumentArray(char *token[], Command *cp) {
 	// build the argument vector
 	int i;
 	int k = 0;
-	for (i=cp->first; i<=cp->last; ++i) {
-		if (strcmp(token[i], "<") == 0 || strcmp(token[i], ">") == 0) {
+	for (i=0; i<=cp->last; ++i) {
+		if (strcmp(token[i], "<") == 0 || strcmp(token[i], ">") == 0
+			|| strcmp(token[i], pipeSep) == 0 || strcmp(token[i], conSep) == 0 || strcmp(token[i], seqSep) == 0) {
 			++i; // skip off the std in/out redirection
 		} else {
 			cp->argv[k] = token[i];
 			++k;
 		}
 	}
-	cp->argv[k] = NULL;
+	cp->path = token[0];
+	cp->argc = k;
+	cp->argv[k] = (char *)0;
 }
 
 int separateCommands(char *token[], Command command[]) 
@@ -130,7 +133,7 @@ int separateCommands(char *token[], Command command[])
 	int nCommands = c;
 
 	// handle standard in/out redirection and build command line argument vector
-	for (i=0; i<nCommands; ++i) {
+	for (i=0; i < nCommands; ++i) {
 		searchRedirection(token, &(command[i]));
 		buildCommandArgumentArray(token, &(command[i]));
 	}

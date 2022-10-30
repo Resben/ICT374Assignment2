@@ -5,6 +5,7 @@
  * date:        2-Oct-22
  */
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +21,7 @@
 
 #define BUFF_SIZE 256
 
-void execute(int rd, char *file, char *executablePath, char *executable, pid_t pid); 
+void execute(Command* command); 
 
 int main(void)
 {
@@ -33,6 +34,10 @@ int main(void)
 	char *wildcard_array[MAX_WILDCARDS];
 	pid_t pid;
 
+	signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
+	signal(SIGINT, SIG_IGN);	/* Disable CTRL-C */
+	//signal(SIGQUIT, SIG_IGN); /* Disable CTRL-\ */
+
 	while (1) {
 		prompt_out = replace_placeholders(prompt);
 		printf("%s ", prompt_out);
@@ -41,46 +46,51 @@ int main(void)
 		tokenise(input, token);
 		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills								      // command with each separate command
 		for (int i = 0; i < total_cmds; ++i) { // run through each command
-			for (int j = command[i].first; j < command[i].last; ++j) { // run through each token of a command
-				if (command[i].last > 2 && strcmp(token[j+1], command->stdout_file) == 0) {
-					execute(1, token[j+1], token[j-1], token[j-1], pid);
-					j += 2;
-				} else if (command[i].last > 2 && strcmp(token[j+1], command->stdout_file) == 0) {
-					execute(2, token[j+1], token[j-1], token[j-1], pid);
-					j += 2;
-				} else if (strcmp(token[j], "prompt") == 0) {
-					update_prompt(&prompt, token[j+1]);
-					++j;
-				} else if (strcmp(token[j], "cd") == 0) {
-					cd(token[j+1]);
-					++j;
-				} else if (strcmp(token[j], "pwd") == 0) {
-					execute(0, NULL, "./src/pwd", "pwd", pid);
-				} else if (strcmp(token[j], "exit") == 0) {
-					execute(0, NULL, "./src/exit", "exit", pid);
-        			} else {
-					execute(0, NULL, token[j], token[j], pid);
-				}
-			} // end for commands
-		} // end for tokens
-	} // end while
-  
+
+			if(strcmp(command[i].path, "pwd") == 0)
+			{
+				command[i].path = "./src/pwd";	//todo
+				execute(&command[i]);
+			}
+			else if(strcmp(command[i].path, "exit") == 0)
+			{
+				command[i].path = "./src/exit";	//todo
+				execute(&command[i]);
+			}
+			else if(strcmp(command[i].path, "cd") == 0)
+			{
+				cd(command[i].argv[1]);
+			}
+			else if(strcmp(command[i].path, "prompt") == 0)
+			{
+				update_prompt(&prompt, command[i].argv[1]);
+			}
+			else
+			{
+				execute(&command[i]);
+			}
+		}
+	}
 	exit(0);
 }
 
-void execute(int rd, char *file, char *executablePath, char *executable, pid_t pid) 
+void execute(Command* command) 
 {
+	int rd = 0;
+	pid_t pid;
 	int ofd; // stdout redirection
 	int ifd; // stdin redirection
 
-	if (rd == 1) { // 1 for stdout redirect 2 for stdin redirect 0 for no redirection
-		ofd = open(file, O_CREAT|O_WRONLY|O_TRUNC, 0666);
+	if (command->stdout_file != NULL) { // 1 for stdout redirect 2 for stdin redirect 0 for no redirection
+		rd = 1;
+		ofd = open(command->stdout_file, O_CREAT | O_WRONLY | O_TRUNC, 0666);
 		if (!ofd) { 
 			perror("open");
 			exit(1);
 		}
-	} else if (rd == 2) { // stdin redirection
-		ifd = open(file, O_RDONLY);
+	} else if (command->stdin_file != NULL) { // stdin redirection
+		rd = 2;
+		ifd = open(command->stdin_file, O_RDONLY);
 		if (!ifd) {
 			perror("open");
 			exit(1);
@@ -104,15 +114,18 @@ void execute(int rd, char *file, char *executablePath, char *executable, pid_t p
 			close(ifd);
 		}
 
-		if (execlp(executablePath, executable, NULL) < 0) { // execute commnd
-			printf("Command '%s' failed\n", executable); // report execlp failure
+		if (execvp(command->path, command->argv) < 0) { // execute commnd
+			printf("Command '%s' failed\n", command->path); // report execlp failure
 			kill(cldPid, SIGKILL); // child process isn't left hanging after execlp failure
-		} 
+		}
+
 	} else { // parent
 			if (rd == 1) {
 				close(ofd);
+				command->stdout_file = NULL;
 			} else if (rd == 2) {
 				close(ifd);
+				command->stdin_file = NULL;
 			}
 
 			wait((int*)0); // wait for child process to finish
