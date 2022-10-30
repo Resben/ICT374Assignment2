@@ -22,6 +22,7 @@
 #define BUFF_SIZE 256
 
 void execute(Command* command); 
+void catch(int signo);
 
 int main(void)
 {
@@ -81,6 +82,12 @@ void execute(Command* command)
 	int ofd; // stdout redirection
 	int ifd; // stdin redirection
 
+	struct sigaction act;
+	act.sa_handler = catch;
+	sigaction(SIGINT, &act, NULL);
+	sigaction(SIGALRM, &act, NULL);
+	sigaction(SIGCHLD, &act, NULL);	
+
 	if (command->stdout_file != NULL) { // 1 for stdout redirect 2 for stdin redirect 0 for no redirection
 		rd = 1;
 		ofd = open(command->stdout_file, O_CREAT | O_WRONLY | O_TRUNC, 0666);
@@ -120,13 +127,37 @@ void execute(Command* command)
 		}
 
 	} else { // parent
-			if (rd == 1) {
-				close(ofd);
-			} else if (rd == 2) {
-				close(ifd);
-			}
 
+		if (rd == 1) {
+			close(ofd);
+			command->stdout_file = NULL;
+		} else if (rd == 2) {
+			close(ifd);
+			command->stdin_file = NULL;
+		}
+
+		if(strcmp(command->sep, seqSep) == 0) {
 			wait((int*)0); // wait for child process to finish
-			return;
+		}
+
+		if(strcmp(command->sep, conSep) == 0) {
+			printf("\n[%d] Waiting\n\n", cldPid);
+		}
+		return;
+	}
+}
+
+void executePipe(Command command[], int size)
+{
+	printf("%d\n", size);
+}
+
+void catch(int signo)
+{
+	pid_t pid;
+	int status;
+
+	if(signo == SIGCHLD) {
+		while((pid = waitpid(-1, &status, WNOHANG)) > 0);
 	}
 }
