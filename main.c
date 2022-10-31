@@ -164,7 +164,26 @@ void execute(Command* command)
 
 void executePipe(Command* cmd1, Command* cmd2)
 {
-	printf("Piped in: %s & %s\n", cmd1->path, cmd2->path);
+	pid_t pid;
+
+	int fd[2];
+
+	if ((pid = fork()) < 0) {
+		perror("fork\n");
+		exit(1);
+	}
+	
+	if (pid == 0) { // child
+		close(fd[0]);
+		dup2(fd[1], 1);
+		printf("Executing cmd1: %s\n", cmd1->path);
+        execlp("ls", "ls", NULL);
+	} else { // parent
+		close(fd[1]);
+		dup2(fd[1], 1);
+		printf("Executing cmd2: %s\n", cmd2->path);
+        execlp("wc", "wc", NULL);           
+	}
 }
 
 void catch(int signo)
