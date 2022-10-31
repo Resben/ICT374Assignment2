@@ -166,40 +166,28 @@ void executePipe(Command* cmd1, Command* cmd2)
 {
 
     int fd[2];
-
-    const char* cmd="ls | wc";//pipe to be coded
-    char* buf[100];// memory
     pipe(fd);
 
     pid_t pid=fork();
-    pid_t pid2=fork();
 
-    if(cmd){//just test the command
+	if(pid==0){
 
-        if(pid==0){
+		close(fd[0]);
+		dup2(fd[1], 1); 
+		if (execvp(cmd1->path, cmd1->argv) < 0) { // execute commnd
+			printf("Command '%s' failed\n", cmd1->path); // report execlp failure
+			//kill(cldPid, SIGKILL); // child process isn't left hanging after execlp failure
+		}
 
-            close(fd[0]);
-            dup2(fd[1], 1); 
-			if (execvp(cmd1->path, cmd1->argv) < 0) { // execute commnd
-				printf("Command '%s' failed\n", cmd1->path); // report execlp failure
-				//kill(cldPid, SIGKILL); // child process isn't left hanging after execlp failure
-			}
-        }
+	} else {
 
-        else{
-
-            close(fd[1]);       
-            dup2(fd[0], 0);
-
-            if(pid2==0) {
-
-				if (execvp(cmd2->path, cmd2->argv) < 0) { // execute commnd
-					printf("Command '%s' failed\n", cmd2->path); // report execlp failure
-					//kill(cldPid, SIGKILL); // child process isn't left hanging after execlp failure
-				}
-			}
-        }
-    }
+		close(fd[1]);       
+		dup2(fd[0], 0);
+		if (execvp(cmd2->path, cmd2->argv) < 0) { // execute commnd
+			printf("Command '%s' failed\n", cmd2->path); // report execlp failure
+			//kill(cldPid, SIGKILL); // child process isn't left hanging after execlp failure
+		}
+	}
 }
 
 void catch(int signo)
