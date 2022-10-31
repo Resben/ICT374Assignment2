@@ -20,9 +20,8 @@
 #include "include/wildcard.h"
 
 #define BUFF_SIZE 256
-#define MAX_PIPES 5
 
-void executePipe(Command command[], int size);
+void executePipe(Command* cmd1, Command* cmd2);
 void execute(Command* command); 
 void catch(int signo);
 
@@ -77,35 +76,14 @@ int main(void)
 			}
 			else if(strcmp(command[i].sep, pipeSep) == 0)
 			{
-				int size = 0;
-				Command newArray[MAX_PIPES];
-				for(int z = i; z < total_cmds; z++) {
-					printf("%d: %s\n", z, command[z].sep);
-					 if(strcmp(command[z].sep, pipeSep) == 0) {
-					 	newArray[z] = command[z];
-					 	size++;
-					 	if(size == MAX_PIPES) {
-					 		printf("ERROR: To many pipes\n");
-					 		flag_error = 1;
-				 			break;
-					 	}
-					} else {
-						if(command[z].argv[0] != NULL) {
-							newArray[z] = command[z];
-							size++;
-							break;
-						} else { // May not be needed
-							printf("ERROR: Invalid pipe");
-							size++;
-							flag_error = 1;
-					 		break;
-						}
-					}
+				if(strcmp(command[i + 1].sep, pipeSep) != 0) {
+					executePipe(&command[i], &command[i + 1]);
 				}
-				if(flag_error == 0) {
-					executePipe(newArray, size);
+				else
+				{
+					printf("Command '%s' failed\n", command[i].path); // report execlp failure
 				}
-				i += size - 1;
+				i++; // skip both commands
 			}
 			else
 			{
@@ -171,10 +149,12 @@ void execute(Command* command)
 			command->stdin_file = NULL;
 		}
 
-		if(strcmp(command->sep, seqSep) == 0) {
-			wait((int*)0); // wait for child process to finish
+			// Wait for process (for ; or |)
+		if(strcmp(command->sep, seqSep) == 0 || strcmp(command->sep, pipeSep) == 0) {
+			wait((int*)0);
 		}
 
+			// Run in background (for &)
 		if(strcmp(command->sep, conSep) == 0) {
 			printf("\n[%d] Waiting\n\n", cldPid);
 		}
@@ -182,9 +162,9 @@ void execute(Command* command)
 	}
 }
 
-void executePipe(Command command[], int size)
+void executePipe(Command* cmd1, Command* cmd2)
 {
-	printf("Piped in: %d\n", size);
+	printf("Piped in: %s & %s\n", cmd1->path, cmd2->path);
 }
 
 void catch(int signo)
