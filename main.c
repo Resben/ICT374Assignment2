@@ -173,6 +173,6 @@ void catch(int signo)
 	int status;
 
 	if(signo == SIGCHLD) {
-		while((pid = waitpid(-1, &status, WNOHANG)) > 0); 	// Results in sending two of the same execute once when it finishes
-	}														// again when this waitpid is run
+		wait((int*)0);
+	}
 }
