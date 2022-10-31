@@ -23,7 +23,7 @@
 | Wild card characters | Ben | Review | 
 | Standard input & output redirection `<` and `>` | Michaela / Ben | Completed |
 | Shell pipeline `\|` | Ben | incomplete | 
-| Background job execution `&` | Ben | incomplete | 
+| Background job execution `&` | Ben | Complete | 
 | The shell environment | | incomplete |
 | Built-in command `exit` | Michaela | Completed |
 
@@ -37,5 +37,5 @@
 | Stdin < redirection results in a segmentation fault | Ben | Complete |
 | Stdin < redirection has issues with newly created files | Michaela | Complete |
 | prompt function will break with a command like this: `ls -l` wont break on `blah blah` prompt function without placeholder will break on three arguments but not on `ls -l` but will break on `ls -la` ????: suggestion fix prompt without placeholder first, likely related | | Incomplete |
-| (For branch Separtors) Command `ls &` will result with two outputs --> called when it finishes and when we check if it finishes using SIGCHLD | | Incomplete | 
-| Multi commands aren't actually working `ls ; ps ; whoami ;` is all just ls commands | Ben | Complete (See seperator branch) |
+| (For branch Separtors) Command `ls &` will result with two outputs --> called when it finishes and when we check if it finishes using SIGCHLD | Michaela | Complete | 
+| Multi commands aren't actually working `ls ; ps ; whoami ;` is all just ls commands | Ben | Complete |
