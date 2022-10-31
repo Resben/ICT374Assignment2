@@ -22,7 +22,7 @@
 | Directory walk `cd` | Ben | Completed | 
 | Wild card characters | Ben | Review | 
 | Standard input & output redirection `<` and `>` | Michaela / Ben | Completed |
-| Shell pipeline `\|` | | incomplete | 
+| Shell pipeline `\|` | Ben | incomplete | 
 | Background job execution `&` | Ben | incomplete | 
 | The shell environment | | incomplete |
 | Built-in command `exit` | Michaela | Completed |
@@ -32,7 +32,10 @@
 ***
 | Issue | Assigned | Status | 
 | ----- | -------- | ------ |
-| prompt function breaks when: prompt set then a command is issued with two arguments | Michaela | In progress |
+| prompt function breaks when: prompt set then a command is issued with two arguments | Michaela | Completed |
 | pwd function will break when the directory changes | | Incomplete |
 | Stdin < redirection results in a segmentation fault | Ben | Complete |
-| Stdin < redirection has issues with newly created files | | Incomplete |
+| Stdin < redirection has issues with newly created files | Michaela | Complete |
+| prompt function will break with a command like this: `ls -l` wont break on `blah blah` prompt function without placeholder will break on three arguments but not on `ls -l` but will break on `ls -la` ????: suggestion fix prompt without placeholder first, likely related | | Incomplete |
+| (For branch Separtors) Command `ls &` will result with two outputs --> called when it finishes and when we check if it finishes using SIGCHLD | | Incomplete | 
+| Multi commands aren't actually working `ls ; ps ; whoami ;` is all just ls commands | Ben | Complete (See seperator branch) |
