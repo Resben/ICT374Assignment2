@@ -21,7 +21,9 @@
 
 #define BUFF_SIZE 256
 
+void executePipe(Command* cmd1, Command* cmd2);
 void execute(Command* command); 
+void catch(int signo);
 
 int main(void)
 {
@@ -32,7 +34,14 @@ int main(void)
 	char *prompt = "%"; // default prompt
 	char *prompt_out; // output prompt
 	char *wildcard_array[MAX_WILDCARDS];
+	int flag_error = 0;
 	pid_t pid;
+
+	struct sigaction act;
+	act.sa_handler = catch;
+	sigaction(SIGINT, &act, NULL);
+	sigaction(SIGALRM, &act, NULL);
+	sigaction(SIGCHLD, &act, NULL);
 
 	signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
 	signal(SIGINT, SIG_IGN);	/* Disable CTRL-C */
@@ -64,6 +73,17 @@ int main(void)
 			else if(strcmp(command[i].path, "prompt") == 0)
 			{
 				update_prompt(&prompt, command[i].argv[1]);
+			}
+			else if(strcmp(command[i].sep, pipeSep) == 0)
+			{
+				if(strcmp(command[i + 1].sep, pipeSep) != 0) {
+					executePipe(&command[i], &command[i + 1]);
+				}
+				else
+				{
+					printf("Command '%s' failed\n", command[i].path); // report execlp failure
+				}
+				i++; // skip both commands
 			}
 			else
 			{
@@ -120,15 +140,39 @@ void execute(Command* command)
 		}
 
 	} else { // parent
-			if (rd == 1) {
-				close(ofd);
-				command->stdout_file = NULL;
-			} else if (rd == 2) {
-				close(ifd);
-				command->stdin_file = NULL;
-			}
 
-			wait((int*)0); // wait for child process to finish
-			return;
+		if (rd == 1) {
+			close(ofd);
+			command->stdout_file = NULL;
+		} else if (rd == 2) {
+			close(ifd);
+			command->stdin_file = NULL;
+		}
+
+			// Wait for process (for ; or |)
+		if(strcmp(command->sep, seqSep) == 0 || strcmp(command->sep, pipeSep) == 0) {
+			wait((int*)0);
+		}
+
+			// Run in background (for &)
+		if(strcmp(command->sep, conSep) == 0) {
+			printf("\n[%d] Waiting\n\n", cldPid);
+		}
+		return;
+	}
+}
+
+void executePipe(Command* cmd1, Command* cmd2)
+{
+	printf("Piped in: %s & %s\n", cmd1->path, cmd2->path);
+}
+
+void catch(int signo)
+{
+	pid_t pid;
+	int status;
+
+	if(signo == SIGCHLD) {
+		wait((int*)0);
 	}
 }
