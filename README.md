@@ -24,6 +24,7 @@
 | Standard input & output redirection `<` and `>` | Michaela / Ben | Completed |
 | Shell pipeline `\|` | Ben / Michaela | Completed | 
 | Background job execution `&` | Ben | Complete | 
+| Sequential job execution `;` | Ben | Complete |
 | The shell environment | Michaela | Completed |
 | Built-in command `exit` | Michaela | Completed |
 
