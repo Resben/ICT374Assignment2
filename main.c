@@ -172,7 +172,50 @@ void execute(Command* command)
 
 void executePipe(Command* cmd1, Command* cmd2)
 {
-	printf("Piped in: %s & %s\n", cmd1->path, cmd2->path);
+	pid_t pid1, pid2;
+	int fd[2];
+
+	if (pipe(fd) == -1) { // open pipe & check success
+		perror("pipe");
+	}
+	
+
+	if ((pid1 = fork()) < 0) {
+		perror("fork\n");
+		exit(1);
+	}
+
+	if (pid1 == 0) {
+		dup2(fd[1], 1); // duplicate stdin into fd[1]
+		close(fd[0]);
+		close(fd[1]);
+		if (execvp(cmd1->path, cmd1->argv) < 0) {
+			printf("Command %s failed\n", cmd1->path);
+			kill(pid1, SIGKILL); // kill process if command fails so not left hanging
+		}
+	} 
+	
+	if ((pid2 = fork()) < 0) {
+		perror("fork\n");
+		exit(1);
+	}
+
+	if(pid2 ==  0) {
+		dup2(fd[0], 0); // duplicate stdout into fd[0]
+		close(fd[0]);
+		close(fd[1]);
+		if (execvp(cmd2->path, cmd2->argv) < 0) {
+			printf("Command %s failed\n", cmd2->path);
+			kill(pid2, SIGKILL); // kill process if command fails so not left hanging
+		}
+	}
+
+	// final close is required
+	close(fd[0]);
+	close(fd[1]); 
+	
+	wait((int*)0); // wait for all child processes to finish before returning
+	return;
 }
 
 void catch(int signo)
