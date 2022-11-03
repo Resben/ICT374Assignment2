@@ -73,7 +73,8 @@ int main(void)
 				update_prompt(&prompt, command[i].argv[1]);
 			} else if(strcmp(command[i].path, "ls") == 0) {
 				glob_t globbuf;
-				if (strchr(command[i].argv[command->argc-1], '*') != NULL) {
+				if (strchr(command[i].argv[command->argc-1], '*') != NULL || 
+						strchr(command[i].argv[command->argc-1], '?') != NULL) {
 					if (glob(command[i].argv[command->argc-1], GLOB_DOOFFS, NULL, &globbuf) == GLOB_NOMATCH) {
 						printf("No files matching %s\n", command[i].argv[command->argc-1]);
 					} else {
