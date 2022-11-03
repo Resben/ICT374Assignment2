@@ -47,23 +47,31 @@ int main(void)
 	signal(SIGINT, SIG_IGN);	/* Disable CTRL-C */
 	//signal(SIGQUIT, SIG_IGN); /* Disable CTRL-\ */
 
+	// get paths for executables pwd and exit
+	char *path = getenv("PWD"); // get the executable path on startup
+	char pwdPath[100], exitPath[100];
+	strcpy(pwdPath, path);
+	strcat(pwdPath, "/src/pwd");
+	strcpy(exitPath, path);
+	strcat(exitPath, "/src/exit");
+	
 	while (1) {
 		prompt_out = replace_placeholders(prompt);
 		printf("%s ", prompt_out);
 		fgets(input, BUFF_SIZE, stdin);
-		
+	
 		tokenise(input, token);
 		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills								      // command with each separate command
 		for (int i = 0; i < total_cmds; ++i) { // run through each command
 
 			if(strcmp(command[i].path, "pwd") == 0)
 			{
-				command[i].path = "./src/pwd";	//todo
+				command[i].path = pwdPath;
 				execute(&command[i]);
 			}
 			else if(strcmp(command[i].path, "exit") == 0)
-			{
-				command[i].path = "./src/exit";	//todo
+			{	
+				command[i].path = exitPath;
 				execute(&command[i]);
 			}
 			else if(strcmp(command[i].path, "cd") == 0)
