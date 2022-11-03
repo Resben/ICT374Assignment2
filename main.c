@@ -33,9 +33,6 @@ int main(void)
 	int total_cmds;
 	char *prompt = "%"; // default prompt
 	char *prompt_out; // output prompt
-	char *wildcard_array[MAX_WILDCARDS];
-	int flag_error = 0;
-	pid_t pid;
 
 	struct sigaction act;
 	act.sa_handler = catch;
@@ -61,40 +58,41 @@ int main(void)
 		fgets(input, BUFF_SIZE, stdin);
 	
 		tokenise(input, token);
-		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills								      // command with each separate command
+		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills
+	       					               // command with each separate command
 		for (int i = 0; i < total_cmds; ++i) { // run through each command
-
-			if(strcmp(command[i].path, "pwd") == 0)
-			{
+			if (strcmp(command[i].path, "pwd") == 0) {
 				command[i].path = pwdPath;
 				execute(&command[i]);
-			}
-			else if(strcmp(command[i].path, "exit") == 0)
-			{	
+			} else if(strcmp(command[i].path, "exit") == 0) {	
 				command[i].path = exitPath;
 				execute(&command[i]);
-			}
-			else if(strcmp(command[i].path, "cd") == 0)
-			{
+			} else if(strcmp(command[i].path, "cd") == 0) {
 				cd(command[i].argv[1]);
-			}
-			else if(strcmp(command[i].path, "prompt") == 0)
-			{
+			} else if(strcmp(command[i].path, "prompt") == 0) {
 				update_prompt(&prompt, command[i].argv[1]);
-			}
-			else if(strcmp(command[i].sep, pipeSep) == 0)
-			{
+			} else if(strcmp(command[i].path, "ls") == 0) {
+				glob_t globbuf;
+				if (strchr(command[i].argv[command->argc-1], '*') != NULL) {
+					if (glob(command[i].argv[command->argc-1], GLOB_DOOFFS, NULL, &globbuf) == GLOB_NOMATCH) {
+						printf("No files matching %s\n", command[i].argv[command->argc-1]);
+					} else {
+						while(globbuf.gl_pathv[i]) {
+							printf("%s\n", globbuf.gl_pathv[i]);
+							++i;
+						}
+					}
+				} else {
+					execute(&command[i]);
+				}
+			} else if(strcmp(command[i].sep, pipeSep) == 0) {
 				if(strcmp(command[i + 1].sep, pipeSep) != 0) {
 					executePipe(&command[i], &command[i + 1]);
-				}
-				else
-				{
+				} else {
 					printf("Command '%s' failed\n", command[i].path); // report execlp failure
 				}
 				i++; // skip both commands
-			}
-			else
-			{
+			} else {
 				execute(&command[i]);
 			}
 		}
@@ -109,6 +107,7 @@ void execute(Command* command)
 	int ofd; // stdout redirection
 	int ifd; // stdin redirection
 
+	// redirections if-else block
 	if (command->stdout_file != NULL) { // 1 for stdout redirect 2 for stdin redirect 0 for no redirection
 		rd = 1;
 		ofd = open(command->stdout_file, O_CREAT | O_WRONLY | O_TRUNC, 0666);
@@ -134,6 +133,7 @@ void execute(Command* command)
 	pid_t cldPid = getpid();// child pid
 	
 	if (pid == 0) { // child
+		// redirections if-else block
 		if (rd == 1) {
 			dup2(ofd, 1); // replaces stdout with ofd
 			close(ofd);
@@ -142,13 +142,14 @@ void execute(Command* command)
 			close(ifd);
 		}
 
-		if (execvp(command->path, command->argv) < 0) { // execute commnd
+		// execute command
+		if (execvp(command->path, command->argv) < 0) { 
 			printf("Command '%s' failed\n", command->path); // report execlp failure
 			kill(cldPid, SIGKILL); // child process isn't left hanging after execlp failure
 		}
 
 	} else { // parent
-
+		// redirections if-else block
 		if (rd == 1) {
 			close(ofd);
 			command->stdout_file = NULL;
@@ -157,12 +158,12 @@ void execute(Command* command)
 			command->stdin_file = NULL;
 		}
 
-			// Wait for process (for ; or |)
+		// Wait for process (for ; or |)
 		if(strcmp(command->sep, seqSep) == 0 || strcmp(command->sep, pipeSep) == 0) {
 			wait((int*)0);
 		}
 
-			// Run in background (for &)
+		// Run in background (for &)
 		if(strcmp(command->sep, conSep) == 0) {
 			printf("\n[%d] Waiting\n\n", cldPid);
 		}
