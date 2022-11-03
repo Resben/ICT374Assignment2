@@ -39,4 +39,4 @@
 | prompt function will break with a command like this: `ls -l` wont break on `blah blah` prompt function without placeholder will break on three arguments but not on `ls -l` but will break on `ls -la` ????: suggestion fix prompt without placeholder first, likely related | | Incomplete |
 | (For branch Separtors) Command `ls &` will result with two outputs --> called when it finishes and when we check if it finishes using SIGCHLD | Michaela | Complete | 
 | Multi commands aren't actually working `ls ; ps ; whoami ;` is all just ls commands | Ben | Complete |
-| Wildcards cannot be used in conjunction with separators, e.g. `ls * | sort -r` or redirections, e.g. `ls * > foo` | | |
+| Wildcards cannot be used in conjunction with separators, e.g. `ls * \| sort -r` or redirections, e.g. `ls * > foo` | | |
