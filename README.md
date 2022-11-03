@@ -22,7 +22,7 @@
 | Directory walk `cd` | Ben | Completed | 
 | Wild card characters | Ben | Review | 
 | Standard input & output redirection `<` and `>` | Michaela / Ben | Completed |
-| Shell pipeline `\|` | Ben | incomplete | 
+| Shell pipeline `\|` | Ben / Michaela | Completed | 
 | Background job execution `&` | Ben | Complete | 
 | The shell environment | Michaela | Completed |
 | Built-in command `exit` | Michaela | Completed |
