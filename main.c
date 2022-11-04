@@ -33,7 +33,6 @@ int main(void)
 	int total_cmds;
 	char *prompt = "%"; // default prompt
 	char *prompt_out; // output prompt
-	pid_t pid;
 
 	struct sigaction act;
 	act.sa_handler = catch;
