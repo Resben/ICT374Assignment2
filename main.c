@@ -159,7 +159,6 @@ void execute(Command* command)
 		exit(1);
 	}
 
-	pid_t pPid = getppid(); // parent pid
 	pid_t cldPid = getpid();// child pid
 	
 	if (pid == 0) { // child
@@ -251,9 +250,6 @@ void executePipe(Command* cmd1, Command* cmd2)
 
 void catch(int signo)
 {
-	pid_t pid;
-	int status;
-
 	if(signo == SIGCHLD) {
 		wait((int*)0);
 	}
