@@ -27,6 +27,9 @@
 | Sequential job execution `;` | Ben | Complete |
 | The shell environment | Michaela | Completed |
 | Built-in command `exit` | Michaela | Completed |
+| Zombie proceses | Michaela / Ben | Completed |
+| Slow system calls | Michaela | Completed |
+| Handling Ctrl-C, Ctrl-\ and Ctrl-Z | Ben | Completed |
 
 
 ### Bug Tracker
