@@ -33,6 +33,7 @@ int main(void)
 	int total_cmds;
 	char *prompt = "%"; // default prompt
 	char *prompt_out; // output prompt
+	pid_t pid;
 
 	struct sigaction act;
 	act.sa_handler = catch;
@@ -42,7 +43,7 @@ int main(void)
 
 	signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
 	signal(SIGINT, SIG_IGN);	/* Disable CTRL-C */
-	//signal(SIGQUIT, SIG_IGN); /* Disable CTRL-\ */
+	signal(SIGQUIT, SIG_IGN); /* Disable CTRL-\ */
 
 	// get paths for executables pwd and exit
 	char *path = getenv("PWD"); // get the executable path on startup
@@ -54,47 +55,65 @@ int main(void)
 	
 	while (1) {
 		prompt_out = replace_placeholders(prompt);
-		printf("%s ", prompt_out);
+		printf("%s ", prompt);
 		fgets(input, BUFF_SIZE, stdin);
+				fflush(stdin);
 	
 		tokenise(input, token);
 		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills
 	       					               // command with each separate command
 		for (int i = 0; i < total_cmds; ++i) { // run through each command
-			if (strcmp(command[i].path, "pwd") == 0) {
+			if (strcmp(command[i].path, "pwd") == 0) 
+			{
 				command[i].path = pwdPath;
 				execute(&command[i]);
-			} else if(strcmp(command[i].path, "exit") == 0) {	
+			} 
+			else if(strcmp(command[i].path, "exit") == 0) 
+			{	
 				command[i].path = exitPath;
 				execute(&command[i]);
-			} else if(strcmp(command[i].path, "cd") == 0) {
+			} 
+			else if(strcmp(command[i].path, "cd") == 0) 
+			{
 				cd(command[i].argv[1]);
-			} else if(strcmp(command[i].path, "prompt") == 0) {
+			} 
+			else if(strcmp(command[i].path, "prompt") == 0) 
+			{
 				update_prompt(&prompt, command[i].argv[1]);
-			} else if(strcmp(command[i].path, "ls") == 0) {
+			} 
+			else if(strcmp(command[i].path, "ls") == 0) 
+			{
 				glob_t globbuf;
+				// check if the last token in the command uses wildcards '*' or '?'
 				if (strchr(command[i].argv[command->argc-1], '*') != NULL || 
 						strchr(command[i].argv[command->argc-1], '?') != NULL) {
+					// check if any files match the wildcard string
 					if (glob(command[i].argv[command->argc-1], GLOB_DOOFFS, NULL, &globbuf) == GLOB_NOMATCH) {
 						printf("No files matching %s\n", command[i].argv[command->argc-1]);
 					} else {
+						// print all files that match the wildcard string
 						while(globbuf.gl_pathv[i]) {
 							printf("%s\n", globbuf.gl_pathv[i]);
 							++i;
 						}
 					}
 				} else {
-					execute(&command[i]);
+					// if wildcards not used execute ls as normal
+					execute(&command[i]); 
 				}
-			} else if(strcmp(command[i].sep, pipeSep) == 0) {
+			} 
+			else if(strcmp(command[i].sep, pipeSep) == 0) // command with pipes
+			{
 				if(strcmp(command[i + 1].sep, pipeSep) != 0) {
 					executePipe(&command[i], &command[i + 1]);
 				} else {
 					printf("Command '%s' failed\n", command[i].path); // report execlp failure
 				}
 				i++; // skip both commands
-			} else {
-				execute(&command[i]);
+			} 
+			else 
+			{
+				execute(&command[i]); // execute any other command not listed above
 			}
 		}
 	}
@@ -165,11 +184,11 @@ void execute(Command* command)
 		}
 
 		// Run in background (for &)
-		if(strcmp(command->sep, conSep) == 0) {
-			printf("\n[%d] Waiting\n\n", cldPid);
+		if(strcmp(command->sep, conSep) == 0) { 
+	       		printf("\n[%d] Background process \n\n", cldPid);
 		}
-		return;
 	}
+	return;
 }
 
 void executePipe(Command* cmd1, Command* cmd2)
