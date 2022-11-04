@@ -56,7 +56,6 @@ int main(void)
 		prompt_out = replace_placeholders(prompt);
 		printf("%s ", prompt_out);
 		fgets(input, BUFF_SIZE, stdin);
-				fflush(stdin);
 	
 		tokenise(input, token);
 		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills
