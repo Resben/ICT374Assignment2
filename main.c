@@ -129,7 +129,7 @@ void execute(Command* command)
 		perror("fork\n");
 		exit(1);
 	}
-
+	
 	pid_t pPid = getppid(); // parent pid
 	pid_t cldPid = getpid();// child pid
 	
@@ -161,6 +161,7 @@ void execute(Command* command)
 
 		// Wait for process (for ; or |)
 		if(strcmp(command->sep, seqSep) == 0 || strcmp(command->sep, pipeSep) == 0) {
+			signal(SIGCLD, catch);
 			wait((int*)0);
 		}
 
@@ -216,16 +217,12 @@ void executePipe(Command* cmd1, Command* cmd2)
 	close(fd[0]);
 	close(fd[1]); 
 	
+	signal(SIGCLD, catch);
 	wait((int*)0); // wait for all child processes to finish before returning
 	return;
 }
 
 void catch(int signo)
 {
-	pid_t pid;
-	int status;
-
-	if(signo == SIGCHLD) {
-		wait((int*)0);
-	}
+	wait((int*)0);
 }
