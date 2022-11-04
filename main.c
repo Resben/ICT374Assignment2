@@ -11,6 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <sys/wait.h>
 #include "include/command.h"
 #include "include/token.h"
@@ -55,7 +56,18 @@ int main(void)
 	while (1) {
 		prompt_out = replace_placeholders(prompt);
 		printf("%s ", prompt_out);
-		fgets(input, BUFF_SIZE, stdin);
+		
+		// handle slow system call fgets
+		int again = 1;
+		char *linept; // pointer to the line buffer
+		while(again) {
+			again = 0; 
+			linept = fgets(input, BUFF_SIZE, stdin);
+			if (linept == NULL) {
+				if (errno == EINTR)
+					again = 1; // signal interruption, read again
+			}
+		}
 	
 		tokenise(input, token);
 		total_cmds = separateCommands(token, command); // separates cmd_token by commands and fills
