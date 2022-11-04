@@ -55,7 +55,7 @@ int main(void)
 	
 	while (1) {
 		prompt_out = replace_placeholders(prompt);
-		printf("%s ", prompt);
+		printf("%s ", prompt_out);
 		fgets(input, BUFF_SIZE, stdin);
 				fflush(stdin);
 	
