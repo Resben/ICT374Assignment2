@@ -6,7 +6,7 @@
 
 void update_prompt(char** oldPrompt, char* newPrompt)
 {
-	if(newPrompt) { 
+	if(newPrompt) { // return if no newPrompt provided
 		*oldPrompt = newPrompt;
 	}
        return;	
